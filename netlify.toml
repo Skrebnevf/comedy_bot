@@ -3,4 +3,4 @@ publish = "public"
 command = "cd src && go run ."
 
 [context.production.environment]
-GO_VERSION = "1.19.13"
+GO_VERSION = "1.19"
