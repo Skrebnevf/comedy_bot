@@ -11,8 +11,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var config = "../config.yaml"
-var env = "../.env"
+var config = "config.yaml"
+var env = ".env"
 
 type Config struct {
 	Tokens struct {
