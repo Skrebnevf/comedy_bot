@@ -1,6 +1,0 @@
-[build]
-command = "go build -o main ./src && ./main"
-publish = "public"
-
-[context.production.environment]
-GO_VERSION = "1.19"
