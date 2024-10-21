@@ -12,7 +12,7 @@ var AwaitingForward bool
 var OriginalUserID int64
 var ForwardedMsg *telebot.Message
 
-var Output = "../output/spisok_dorogih_gostei.txt"
+var Output = "./output/spisok_dorogih_gostei.txt"
 
 var AddMeFormMsg = "Запишитесь по форме Имя, мероприятие, количество человек"
 var ReplyToHumanMsg = "Следующее сообщение будет отправлено кожанному мешку"

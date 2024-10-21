@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	config, err := LoadConfig()
 	if err != nil {
 		log.Fatal(err)
