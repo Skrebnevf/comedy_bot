@@ -8,6 +8,10 @@ import (
 )
 
 func CommandHandlers(b *telebot.Bot) {
+	b.Handle("/star", func(c telebot.Context) error {
+		return c.Send(Start)
+	})
+
 	b.Handle("/addme", func(c telebot.Context) error {
 		WaitingForMessage[c.Message().Sender.ID] = true
 		return c.Send(AddMeFormMsg)
