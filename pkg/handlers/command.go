@@ -1,18 +1,23 @@
 package handlers
 
 import (
+	"github/skrebnevf/comedy_belgrade_bot/pkg/helpers"
 	"log"
 	"os"
 
+	"github.com/supabase-community/supabase-go"
 	"gopkg.in/telebot.v4"
 )
 
-func CommandHandlers(b *telebot.Bot) {
+func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
+
 	b.Handle("/start", func(c telebot.Context) error {
+		helpers.WriteUser(c, db)
 		return c.Send(Start)
 	})
 
 	b.Handle("/addme", func(c telebot.Context) error {
+		helpers.WriteUser(c, db)
 		WaitingForMessage[c.Message().Sender.ID] = true
 		return c.Send(AddMeFormMsg)
 	})

@@ -15,10 +15,11 @@ var config = "./config.yaml"
 var env = "./.env"
 
 type Config struct {
-	Tokens struct {
-		TestToken   string `yaml:"test"`
-		ComedyToken string `yaml:"comedy"`
-	} `yaml:"token"`
+	Token string `yaml:"token"`
+	DB    struct {
+		Url string `yaml:"db_url"`
+		Key string `yaml:"db_key"`
+	} `yaml:"db"`
 }
 
 func LoadConfig() (*Config, error) {
@@ -37,7 +38,15 @@ func LoadConfig() (*Config, error) {
 	}
 
 	if token := os.Getenv("TOKEN"); token != "" {
-		config.Tokens.TestToken = token
+		config.Token = token
+	}
+
+	if url := os.Getenv("DB_URL"); url != "" {
+		config.DB.Url = url
+	}
+
+	if key := os.Getenv("DB_TOKEN"); key != "" {
+		config.DB.Key = key
 	}
 
 	return &config, nil

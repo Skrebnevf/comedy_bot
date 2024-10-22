@@ -1,3 +1,4 @@
-token:
-  comedy: ""
-  test: ""
+token: ""
+db:
+  db_url: ""
+  db_key: ""
