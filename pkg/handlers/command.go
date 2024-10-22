@@ -8,7 +8,7 @@ import (
 )
 
 func CommandHandlers(b *telebot.Bot) {
-	b.Handle("/star", func(c telebot.Context) error {
+	b.Handle("/start", func(c telebot.Context) error {
 		return c.Send(Start)
 	})
 
