@@ -1,14 +1,16 @@
 package handlers
 
 import (
+	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
 	"os"
 	"strings"
 
+	"github.com/supabase-community/supabase-go"
 	"gopkg.in/telebot.v4"
 )
 
-func TextHandler(b *telebot.Bot) {
+func TextHandler(b *telebot.Bot, db *supabase.Client) {
 	b.Handle(telebot.OnText, func(c telebot.Context) error {
 		if c.Chat().ID == ChatID {
 			if strings.Contains(c.Message().Text, strings.TrimSpace(AdminHelper)) {
@@ -52,6 +54,17 @@ func TextHandler(b *telebot.Bot) {
 			WaitingForMessage[c.Message().Sender.ID] = false
 
 			return c.Send(AddMeCompleteMsg)
+		}
+
+		if WaitingForAdminMessage[c.Message().Sender.ID] {
+			text := strings.TrimPrefix(c.Message().Text, "/ordgy")
+			text = strings.TrimSpace(text)
+
+			database.AddEvent(c, db, text)
+
+			WaitingForMessage[c.Message().Sender.ID] = false
+
+			return c.Send("Объявление для набора в оргию записано")
 		}
 
 		return c.Send(BaseMsg)

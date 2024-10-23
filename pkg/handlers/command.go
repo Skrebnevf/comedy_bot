@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github/skrebnevf/comedy_belgrade_bot/pkg/helpers"
+	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
 	"os"
 
@@ -12,19 +12,29 @@ import (
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 
 	b.Handle("/start", func(c telebot.Context) error {
-		helpers.WriteUser(c, db)
+		database.WriteUser(c, db)
 		return c.Send(Start)
 	})
 
+	b.Handle("/events", func(c telebot.Context) error {
+		events := database.GetEvents(db)
+		return c.Send(events)
+	})
+
+	b.Handle("/orgy", func(c telebot.Context) error {
+		WaitingForAdminMessage[c.Message().Sender.ID] = true
+		return c.Send(OrgyMsg)
+	})
+
 	b.Handle("/addme", func(c telebot.Context) error {
-		helpers.WriteUser(c, db)
+		database.WriteUser(c, db)
 		WaitingForMessage[c.Message().Sender.ID] = true
 		return c.Send(AddMeFormMsg)
 	})
 
 	b.Handle("/human", func(c telebot.Context) error {
 		AwaitingForward = true
-		OriginalUserID = c.Sender().ID // Сохраняем ID пользователя
+		OriginalUserID = c.Sender().ID
 		return c.Send(ReplyToHumanMsg)
 	})
 

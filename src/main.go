@@ -43,7 +43,7 @@ func main() {
 	}()
 
 	handlers.CommandHandlers(b, client)
-	handlers.TextHandler(b)
+	handlers.TextHandler(b, client)
 	handlers.OtherHandlers(b)
 	handlers.ReplyHandler(b)
 

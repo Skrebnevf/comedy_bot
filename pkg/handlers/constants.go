@@ -8,6 +8,7 @@ var comedyChat int64
 var ChatID = testChat
 
 var WaitingForMessage = map[int64]bool{}
+var WaitingForAdminMessage = map[int64]bool{}
 var AwaitingForward bool
 var OriginalUserID int64
 var ForwardedMsg *telebot.Message
@@ -28,4 +29,5 @@ var AdminCommandMsg = "Админские команды:\n /lenochka - посм
 var BaseMsg = "Введи команду /addme для записи или /human для соеденения с кожанным"
 var AddMeCompleteMsg = "Вы записаны, идете нахуй"
 var AdminHelper = "Эй ботяра блять"
+var OrgyMsg = "В следующем сообщение сделай афишу, не спеши, у нас же дахуя времени..."
 var Start = "Добро пожаловать и идите на хуй!\nЯ бот КБ и вы можете записаться через меня, или связатьсся с уебком!\nВведи команду \n/addme для записи или \n/human для соеденения с кожанным"
