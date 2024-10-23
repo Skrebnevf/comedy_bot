@@ -61,7 +61,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 		}
 
 		if WaitingForAdminMessage[c.Message().Sender.ID] {
-			text := strings.TrimPrefix(c.Message().Text, "/ordgy")
+			text := strings.TrimPrefix(c.Message().Text, "/orgy")
 			text = strings.TrimSpace(text)
 
 			err := database.AddEvent(c, db, text)
