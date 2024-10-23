@@ -2,7 +2,7 @@ package database
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 
 	"github.com/supabase-community/supabase-go"
 	"gopkg.in/telebot.v4"
@@ -12,26 +12,25 @@ type Events struct {
 	Description string `json:"description"`
 }
 
-func GetEvents(db *supabase.Client) string {
+func GetEvents(db *supabase.Client) (string, error) {
 	res, _, err := db.From("events").
 		Select("description", "", false).
 		Eq("id", "1").
 		Execute()
-
 	if err != nil {
-		log.Printf("Error inserting into Supabase: %v", err)
+		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
 	}
 
 	var events []Events
 	if err := json.Unmarshal(res, &events); err != nil {
-		log.Printf("unmarshal response error: %v", err)
+		return "", fmt.Errorf("unmarshal response error: %v", err)
 	}
 
 	event := events[0].Description
-	return event
+	return event, nil
 }
 
-func AddEvent(c telebot.Context, db *supabase.Client, desc string) {
+func AddEvent(c telebot.Context, db *supabase.Client, desc string) error {
 	desc = c.Message().Text
 
 	var result []map[string]interface{}
@@ -46,9 +45,11 @@ func AddEvent(c telebot.Context, db *supabase.Client, desc string) {
 			Execute()
 
 		if err != nil {
-			log.Printf("Error inserting into Supabase: %v", err)
+			return fmt.Errorf("Error inserting into Supabase: %v", err)
 		}
 	}
+
+	return nil
 }
 
 type User struct {
@@ -59,7 +60,7 @@ type User struct {
 	IsBot    bool   `json:"isBot"`
 }
 
-func WriteUser(c telebot.Context, db *supabase.Client) {
+func WriteUser(c telebot.Context, db *supabase.Client) error {
 	userID := c.Sender().ID
 	username := c.Sender().Username
 	name := c.Sender().FirstName
@@ -80,7 +81,8 @@ func WriteUser(c telebot.Context, db *supabase.Client) {
 			Insert(insertData, true, "id", "representation", "").
 			Execute()
 		if err != nil {
-			log.Printf("Error inserting into Supabase: %v", err)
+			return fmt.Errorf("Error inserting into Supabase: %v", err)
 		}
 	}
+	return nil
 }

@@ -12,12 +12,17 @@ import (
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 
 	b.Handle("/start", func(c telebot.Context) error {
-		database.WriteUser(c, db)
+		if err := database.WriteUser(c, db); err != nil {
+			log.Printf("cannot write data from /addme: %v", err)
+		}
 		return c.Send(Start)
 	})
 
 	b.Handle("/events", func(c telebot.Context) error {
-		events := database.GetEvents(db)
+		events, err := database.GetEvents(db)
+		if err != nil {
+			log.Printf("cannot get events from '/events': %v", err)
+		}
 		return c.Send(events)
 	})
 
@@ -27,7 +32,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/addme", func(c telebot.Context) error {
-		database.WriteUser(c, db)
+		if err := database.WriteUser(c, db); err != nil {
+			log.Printf("cannot write data from /addme: %v", err)
+		}
 		WaitingForMessage[c.Message().Sender.ID] = true
 		return c.Send(AddMeFormMsg)
 	})
@@ -41,8 +48,8 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	b.Handle("/lenochka", func(c telebot.Context) error {
 		file, err := os.Open(Output)
 		if err != nil {
-			b.Send(c.Message().Sender, CannotOpenFileErrMsg)
 			log.Printf("cannot open file: %v", err)
+			return c.Send(CannotOpenFileErrMsg)
 		}
 		defer file.Close()
 
@@ -51,27 +58,25 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 			FileName: Output,
 		}
 
-		if _, err := b.Send(c.Message().Sender, doc); err != nil {
+		if err := c.Send(doc); err != nil {
 			log.Printf("cannot sent file: %v", err)
-			b.Send(c.Message().Sender, EmptyFileErrMsg)
+			return c.Send(EmptyFileErrMsg)
 		} else {
-			b.Send(c.Message().Sender, SentFileMsg)
+			return c.Send(SentFileMsg)
 		}
-
-		return c.Send(RazumMsg)
 	})
 
 	b.Handle("/ochko", func(c telebot.Context) error {
 		file, err := os.OpenFile(Output, os.O_WRONLY|os.O_TRUNC, 0644)
 		if err != nil {
-			b.Send(c.Message().Sender, CannotOpenFileErrMsg)
 			log.Printf("cannot open file: %v", err)
+			return c.Send(c.Message().Sender, CannotOpenFileErrMsg)
 		}
 		defer file.Close()
 
 		if _, err := file.WriteString(""); err != nil {
-			c.Send(c.Message().Sender, CannotClearFileMsg)
 			log.Printf("cannot write file: %v", err)
+			return c.Send(c.Message().Sender, CannotClearFileMsg)
 		}
 
 		return c.Send("Записи удалены мой повелитель")
