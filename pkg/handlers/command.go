@@ -46,15 +46,40 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/lenochka", func(c telebot.Context) error {
-		file, err := os.Open(Output)
+		reservation, err := database.GetReservations(db)
+		if err != nil {
+			log.Println("cannot get reservations lis, error: %v", err)
+		}
+
+		file, err := os.OpenFile(Output, os.O_WRONLY|os.O_TRUNC, 0644)
+		if err != nil {
+			log.Printf("cannot open file: %v", err)
+			WaitingForMessage[c.Message().Sender.ID] = false
+			c.Send(CannotWriteFileMsg)
+		}
+		defer file.Close()
+
+		if _, err := file.WriteString(""); err != nil {
+			log.Printf("cannot write file: %v", err)
+			WaitingForMessage[c.Message().Sender.ID] = false
+			c.Send(CannotWriteFileMsg)
+		}
+
+		if _, err := file.WriteString(reservation); err != nil {
+			log.Printf("cannot write file: %v", err)
+			WaitingForMessage[c.Message().Sender.ID] = false
+			c.Send(CannotWriteFileMsg)
+		}
+
+		output, err := os.Open(Output)
 		if err != nil {
 			log.Printf("cannot open file: %v", err)
 			return c.Send(CannotOpenFileErrMsg)
 		}
-		defer file.Close()
+		defer output.Close()
 
 		doc := &telebot.Document{
-			File:     telebot.FromReader(file),
+			File:     telebot.FromReader(output),
 			FileName: Output,
 		}
 
@@ -67,18 +92,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/ochko", func(c telebot.Context) error {
-		file, err := os.OpenFile(Output, os.O_WRONLY|os.O_TRUNC, 0644)
-		if err != nil {
-			log.Printf("cannot open file: %v", err)
-			return c.Send(c.Message().Sender, CannotOpenFileErrMsg)
-		}
-		defer file.Close()
-
-		if _, err := file.WriteString(""); err != nil {
-			log.Printf("cannot write file: %v", err)
-			return c.Send(c.Message().Sender, CannotClearFileMsg)
-		}
-
+		database.AddReservations(c, db, "")
 		return c.Send("Записи удалены мой повелитель")
 	})
 }

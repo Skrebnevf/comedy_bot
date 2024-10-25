@@ -12,24 +12,6 @@ type Events struct {
 	Description string `json:"description"`
 }
 
-func GetEvents(db *supabase.Client) (string, error) {
-	res, _, err := db.From("events").
-		Select("description", "", false).
-		Eq("id", "1").
-		Execute()
-	if err != nil {
-		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
-	}
-
-	var events []Events
-	if err := json.Unmarshal(res, &events); err != nil {
-		return "", fmt.Errorf("unmarshal response error: %v", err)
-	}
-
-	event := events[0].Description
-	return event, nil
-}
-
 func AddEvent(c telebot.Context, db *supabase.Client, desc string) error {
 	desc = c.Message().Text
 
@@ -40,6 +22,66 @@ func AddEvent(c telebot.Context, db *supabase.Client, desc string) error {
 		}
 
 		_, _, err := db.From("events").
+			Update(insert, "representation", "").
+			Eq("id", "1").
+			Execute()
+
+		if err != nil {
+			return fmt.Errorf("Error inserting into Supabase: %v", err)
+		}
+	}
+
+	return nil
+}
+
+func GetEvents(db *supabase.Client) (string, error) {
+	res, _, err := db.From("events").
+		Select("description", "", false).
+		Eq("id", "1").
+		Execute()
+	if err != nil {
+		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
+	}
+
+	var e []Events
+	if err := json.Unmarshal(res, &e); err != nil {
+		return "", fmt.Errorf("unmarshal response error: %v", err)
+	}
+
+	event := e[0].Description
+	return event, nil
+}
+
+type Reservations struct {
+	Description string `json:"reservations"`
+}
+
+func GetReservations(db *supabase.Client) (string, error) {
+	res, _, err := db.From("reservations").
+		Select("reservations", "", false).
+		Eq("id", "1").
+		Execute()
+	if err != nil {
+		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
+	}
+
+	var r []Reservations
+	if err := json.Unmarshal(res, &r); err != nil {
+		return "", fmt.Errorf("unmarshal response error: %v", err)
+	}
+
+	reservations := r[0].Description
+	return reservations, nil
+}
+
+func AddReservations(c telebot.Context, db *supabase.Client, msg string) error {
+	var result []map[string]interface{}
+	if len(result) == 0 {
+		insert := Reservations{
+			Description: msg,
+		}
+
+		_, _, err := db.From("reservations").
 			Update(insert, "representation", "").
 			Eq("id", "1").
 			Execute()

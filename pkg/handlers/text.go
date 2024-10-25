@@ -3,7 +3,6 @@ package handlers
 import (
 	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/supabase-community/supabase-go"
@@ -36,23 +35,20 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 		}
 
 		if WaitingForMessage[c.Message().Sender.ID] {
+			reservations, err := database.GetReservations(db)
+			if err != nil {
+				log.Println("cannot get list of reservations, error: %v", err)
+			}
+
 			text := strings.TrimPrefix(c.Message().Text, "/addme")
 			text = strings.TrimSpace(text)
 
 			log.Println(c.Message().Sender.Username + " Записался - " + text)
 
-			file, err := os.OpenFile(Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-			if err != nil {
-				log.Printf("cannot open file: %v", err)
-				WaitingForMessage[c.Message().Sender.ID] = false
-				c.Send(CannotWriteFileMsg)
-			}
-			defer file.Close()
+			msg := reservations + "\n" + text
 
-			if _, err := file.WriteString(text + "\n"); err != nil {
-				log.Printf("cannot write file: %v", err)
-				WaitingForMessage[c.Message().Sender.ID] = false
-				c.Send(CannotWriteFileMsg)
+			if err := database.AddReservations(c, db, msg); err != nil {
+				log.Println("cannot write new reservations, error: %v", err)
 			}
 
 			WaitingForMessage[c.Message().Sender.ID] = false
