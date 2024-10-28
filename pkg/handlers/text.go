@@ -20,7 +20,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 
 		if AwaitingForward {
 			msg := c.Message()
-			log.Println(c.Message().Sender.Username + " Спросил - " + msg.Text)
+			log.Println(c.Message().Sender.Username + " Asked - " + msg.Text)
 
 			var err error
 			ForwardedMsg, err = b.Forward(&telebot.Chat{ID: ChatID}, msg)
@@ -43,7 +43,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			text := strings.TrimPrefix(c.Message().Text, "/addme")
 			text = strings.TrimSpace(text)
 
-			log.Println(c.Message().Sender.Username + " Записался - " + text)
+			log.Println(c.Message().Sender.Username + " Add reeservations - " + text)
 
 			msg := reservations + "\n" + text
 
@@ -52,7 +52,6 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			}
 
 			WaitingForMessage[c.Message().Sender.ID] = false
-
 			return c.Send(AddMeCompleteMsg)
 		}
 
@@ -68,7 +67,6 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			}
 
 			WaitingForMessage[c.Message().Sender.ID] = false
-
 			return c.Send("Объявление для набора в оргию записано")
 		}
 

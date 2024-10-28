@@ -13,7 +13,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 
 	b.Handle("/start", func(c telebot.Context) error {
 		if err := database.WriteUser(c, db); err != nil {
-			log.Printf("cannot write data from /addme: %v", err)
+			log.Printf("cannot write data from /start: %v", err)
+		}
+		if err := database.AddCommandCounter(c, db); err != nil {
+			log.Printf("cannot write command and set counter from /start: %v", err)
 		}
 		return c.Send(Start)
 	})
@@ -22,6 +25,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		events, err := database.GetEvents(db)
 		if err != nil {
 			log.Printf("cannot get events from '/events': %v", err)
+		}
+		if err := database.AddCommandCounter(c, db); err != nil {
+			log.Printf("cannot write command and set counter from /addme: %v", err)
 		}
 		return c.Send(events)
 	})
@@ -32,16 +38,22 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/addme", func(c telebot.Context) error {
+		WaitingForMessage[c.Message().Sender.ID] = true
 		if err := database.WriteUser(c, db); err != nil {
 			log.Printf("cannot write data from /addme: %v", err)
 		}
-		WaitingForMessage[c.Message().Sender.ID] = true
+		if err := database.AddCommandCounter(c, db); err != nil {
+			log.Printf("cannot write command and set counter from /addme: %v", err)
+		}
 		return c.Send(AddMeFormMsg)
 	})
 
 	b.Handle("/human", func(c telebot.Context) error {
 		AwaitingForward = true
 		OriginalUserID = c.Sender().ID
+		if err := database.AddCommandCounter(c, db); err != nil {
+			log.Printf("cannot write command and set counter from /addme: %v", err)
+		}
 		return c.Send(ReplyToHumanMsg)
 	})
 
