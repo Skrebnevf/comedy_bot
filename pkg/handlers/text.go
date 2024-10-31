@@ -11,11 +11,8 @@ import (
 
 func TextHandler(b *telebot.Bot, db *supabase.Client) {
 	b.Handle(telebot.OnText, func(c telebot.Context) error {
-		if c.Chat().ID == ChatID {
-			if strings.Contains(c.Message().Text, strings.TrimSpace(AdminHelper)) {
-				return c.Send(AdminCommandMsg)
-			}
-			return nil
+		if strings.Contains(c.Message().Text, AdminHelper) {
+			return c.Send(AdminCommandMsg)
 		}
 
 		if AwaitingForward {
@@ -43,7 +40,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			text := strings.TrimPrefix(c.Message().Text, "/addme")
 			text = strings.TrimSpace(text)
 
-			log.Println(c.Message().Sender.Username + " Add reeservations - " + text)
+			log.Println(c.Message().Sender.Username + " Add reservations - " + text)
 
 			msg := reservations + "\n" + text
 

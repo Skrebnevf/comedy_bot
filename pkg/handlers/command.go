@@ -10,7 +10,6 @@ import (
 )
 
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
-
 	b.Handle("/start", func(c telebot.Context) error {
 		if err := database.WriteUser(c, db); err != nil {
 			log.Printf("cannot write data from /start: %v", err)

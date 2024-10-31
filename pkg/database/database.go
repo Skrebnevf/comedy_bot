@@ -20,13 +20,10 @@ func AddEvent(c telebot.Context, db *supabase.Client, desc string) error {
 		Description: desc,
 	}
 
-	_, code, err := db.From("events").
+	_, _, err := db.From("events").
 		Update(insert, "representation", "exact").
 		Eq("id", "1").
 		Execute()
-	if code != 1 {
-		return fmt.Errorf("unexpected returned code value (0)")
-	}
 	if err != nil {
 		return fmt.Errorf("Error inserting into Supabase: %v", err)
 	}
@@ -34,13 +31,10 @@ func AddEvent(c telebot.Context, db *supabase.Client, desc string) error {
 }
 
 func GetEvents(db *supabase.Client) (string, error) {
-	res, code, err := db.From("events").
+	res, _, err := db.From("events").
 		Select("description", "exact", false).
 		Eq("id", "1").
 		Execute()
-	if code != 1 {
-		return "", fmt.Errorf("unexpected returned code value (0)")
-	}
 	if err != nil {
 		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
 	}
@@ -59,13 +53,10 @@ type Reservations struct {
 }
 
 func GetReservations(db *supabase.Client) (string, error) {
-	res, code, err := db.From("reservations").
+	res, _, err := db.From("reservations").
 		Select("reservations", "exact", false).
 		Eq("id", "1").
 		Execute()
-	if code != 1 {
-		return "", fmt.Errorf("unexpected returned code value (0)")
-	}
 	if err != nil {
 		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
 	}
@@ -86,13 +77,10 @@ func AddReservations(c telebot.Context, db *supabase.Client, msg string) error {
 			Description: msg,
 		}
 
-		_, code, err := db.From("reservations").
+		_, _, err := db.From("reservations").
 			Update(insert, "representation", "exact").
 			Eq("id", "1").
 			Execute()
-		if code != 1 {
-			return fmt.Errorf("unexpected returned code value (0)")
-		}
 		if err != nil {
 			return fmt.Errorf("Error inserting into Supabase: %v", err)
 		}
@@ -125,12 +113,10 @@ func WriteUser(c telebot.Context, db *supabase.Client) error {
 			IsBot:    isBot,
 		}
 
-		_, code, err := db.From("users").
+		_, _, err := db.From("users").
 			Insert(insertData, true, "id", "representation", "exact").
 			Execute()
-		if code != 1 {
-			return fmt.Errorf("unexpected returned code value (0)")
-		}
+
 		if err != nil {
 			return fmt.Errorf("Error inserting into Supabase: %v", err)
 		}
@@ -150,14 +136,11 @@ func AddCommandCounter(c telebot.Context, db *supabase.Client) error {
 	command := c.Message().Text
 	username := c.Sender().Username
 
-	res, code, err := db.From("command_counter").
+	res, _, err := db.From("command_counter").
 		Select("count", "exact", false).
 		Eq("id", strconv.Itoa(int(userID))).
 		Eq("command", command).
 		Execute()
-	if code != 1 {
-		return fmt.Errorf("unexpected returned code value (0)")
-	}
 	if err != nil {
 		return fmt.Errorf("cannot get command counter table, error: %v", err)
 	}
@@ -175,12 +158,9 @@ func AddCommandCounter(c telebot.Context, db *supabase.Client) error {
 			Username: username,
 		}
 
-		_, code, err := db.From("command_counter").
+		_, _, err := db.From("command_counter").
 			Insert(insert, false, "uuid", "minimal", "exact").
 			Execute()
-		if code != 0 {
-			return fmt.Errorf("unexpected returned code value (1)")
-		}
 		if err != nil {
 			return fmt.Errorf("cannot create new record in command_counter table, error: %v", err)
 		}
@@ -193,14 +173,11 @@ func AddCommandCounter(c telebot.Context, db *supabase.Client) error {
 			Username: username,
 		}
 
-		_, code, err := db.From("command_counter").
+		_, _, err := db.From("command_counter").
 			Update(insert, "minimal", "exact").
 			Eq("id", strconv.Itoa(int(userID))).
 			Eq("command", command).
 			Execute()
-		if code != 1 {
-			return fmt.Errorf("unexpected status code, changed more than one row!")
-		}
 		if err != nil {
 			return fmt.Errorf("cannot set new counter value, error: %v", err)
 		}
