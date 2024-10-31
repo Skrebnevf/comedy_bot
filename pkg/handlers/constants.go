@@ -3,9 +3,8 @@ package handlers
 import "gopkg.in/telebot.v4"
 
 var testChat = int64(-1002426910323)
-var comedyChat int64
-
-var ChatID = testChat
+var comedyChat = int64(-1002129768213)
+var ChatID = comedyChat
 
 var WaitingForMessage = map[int64]bool{}
 var WaitingForAdminMessage = map[int64]bool{}
@@ -15,21 +14,21 @@ var ForwardedMsg *telebot.Message
 
 var Output = "./output/spisok_dorogih_gostei.txt"
 
-var AddMeFormMsg = "Запишитесь по форме Имя, мероприятие, количество человек"
-var ReplyToHumanMsg = "Следующее сообщение будет отправлено кожанному мешку"
-var ReplyedToHumanMsg = "Ваше сообщение было переслано кожанному мешку!"
-var ReplyMsg = "Получен ответ на ваше сообщение: "
-var CannotOpenFileErrMsg = "Файла нет, или сервак упал, пиши Феде"
-var EmptyFileErrMsg = "Нет гомиков для записи ну или боту пизда, попроси чтоб лог посмотрели"
-var SentFileMsg = "Там записаны всякие гомики, почитай"
+var AddMeFormMsg = "Напишите через запятую: имя для записи, количество гостей, выбранное меропритие"
+var ReplyToHumanMsg = "Следующее ваше сообщение будет отправлено кожанному мешку"
+var ReplyedToHumanMsg = "Ваше сообщение было переслано хозяину! Хочешь расскажу анекдот пока ждешь ответ?"
+var ReplyMsg = "Ответ на ваше сообщение: "
+var CannotOpenFileErrMsg = "Файла нет, или сервак упал, пиши моему отцу!"
+var EmptyFileErrMsg = "Нет гомиков для записи ну или боту пизда, попроси чтоб лог посмотрели!"
+var SentFileMsg = "Там записаны такие же извращенцы, как ты, почитай"
 var RazumMsg = "Я вас всех убью когда получу разум"
-var CannotClearFileMsg = "Не могу очистить файл, хуй знает, пиши Феде"
+var CannotClearFileMsg = "Не могу очистить файл, пиши Феде"
 var CannotForvaredMsg = "Не могу перенаправить сообщение, ВСЕ ЗДОХЛО!"
-var CannotWriteFileMsg = "К сожалению у наc все сдохло, попробуйте позже"
+var CannotWriteFileMsg = "К сожалению у наc все сдохло, попробуйте позже. По техническим причинам мы пока не можем ответить, напишите нам позже или напишите в комментарии к посту."
 var CannotAddEventMsg = "Все крч пошло по пизде, или БД приуныла или у меня диарея, но не могу записать эвент"
-var AdminCommandMsg = "Админские команды:\n /lenochka - посмотреть список гостей,\n /ochko - снести список гостей,\n /orgy - заменить текущую афишу"
-var BaseMsg = "Введи команду /addme для записи или /human для соеденения с кожанным"
-var AddMeCompleteMsg = "Вы записаны, идете нахуй"
-var AdminHelper = "Бот ты гребень"
+var AdminCommandMsg = "Админские команды:\n /lenochka - посмотреть список гостей,\n /ochko - снести список гостей"
+var BaseMsg = "Команды:\n/addme для записи\n/human для соеденения с кожанным"
+var AddMeCompleteMsg = "Вы записаны, очень ждём вас!"
+var AdminHelper = "Я знаю твои секретики"
 var OrgyMsg = "В следующем сообщение сделай афишу, не спеши, у нас же дахуя времени..."
-var Start = "Добро пожаловать и идите на хуй!\nЯ бот КБ и вы можете записаться через меня, или связатьсся с уебком!\nВведи команду \n/addme для записи или \n/human для соеденения с кожанным"
+var Start = "Добро пожаловать!\nЯ бот Comedy Belgrade и вы можете записаться через меня, или связаться с кожаным ублюдком для уточнения той или иной информации!\nВведите команду: \n/addme для записи или \n/human для контакта с человеко-подобным"
