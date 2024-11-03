@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
 	"os"
@@ -11,6 +12,7 @@ import (
 
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	b.Handle("/start", func(c telebot.Context) error {
+		fmt.Println(c.Message().Chat.ID)
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
