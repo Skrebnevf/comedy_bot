@@ -11,6 +11,9 @@ import (
 
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	b.Handle("/start", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
 		if err := database.WriteUser(c, db); err != nil {
 			log.Printf("cannot write data from /start: %v", err)
 		}
@@ -21,6 +24,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/events", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
 		events, err := database.GetEvents(db)
 		if err != nil {
 			log.Printf("cannot get events from '/events': %v", err)
@@ -37,6 +43,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/addme", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
 		WaitingForMessage[c.Message().Sender.ID] = true
 		if err := database.WriteUser(c, db); err != nil {
 			log.Printf("cannot write data from /addme: %v", err)
@@ -48,6 +57,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/human", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
 		AwaitingForward = true
 		OriginalUserID = c.Sender().ID
 		if err := database.AddCommandCounter(c, db); err != nil {
