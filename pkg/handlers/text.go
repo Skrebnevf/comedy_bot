@@ -59,11 +59,11 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			err := database.AddEvent(c, db, text)
 			if err != nil {
 				log.Printf("cannot add event: %v", err)
-				WaitingForMessage[c.Message().Sender.ID] = false
+				WaitingForAdminMessage[c.Message().Sender.ID] = false
 				return c.Send(CannotAddEventMsg)
 			}
 
-			WaitingForMessage[c.Message().Sender.ID] = false
+			WaitingForAdminMessage[c.Message().Sender.ID] = false
 			return c.Send("Объявление для набора в оргию записано")
 		}
 
