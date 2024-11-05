@@ -135,6 +135,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 
 	b.Handle("/ochko", func(c telebot.Context) error {
 		database.AddReservations(c, db, "")
+		database.CancelReservation(c, db, "")
 		return c.Send("Записи удалены мой повелитель")
 	})
 }
