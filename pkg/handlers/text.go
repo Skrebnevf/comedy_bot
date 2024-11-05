@@ -11,6 +11,11 @@ import (
 
 func TextHandler(b *telebot.Bot, db *supabase.Client) {
 	b.Handle(telebot.OnText, func(c telebot.Context) error {
+		if err := database.WriteMessageLog(c, db); err != nil {
+			log.Printf("cannot write message log: %v", err)
+
+		}
+
 		if strings.Contains(c.Message().Text, AdminHelper) {
 			return c.Send(AdminCommandMsg)
 		}

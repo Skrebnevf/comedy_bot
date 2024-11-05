@@ -88,6 +88,30 @@ func AddReservations(c telebot.Context, db *supabase.Client, msg string) error {
 	return nil
 }
 
+type MessageLog struct {
+	Username string `json:"username"`
+	Message  string `json:"message"`
+}
+
+func WriteMessageLog(c telebot.Context, db *supabase.Client) error {
+	username := c.Sender().Username
+	message := c.Message().Text
+
+	insertData := MessageLog{
+		Username: username,
+		Message:  message,
+	}
+
+	_, _, err := db.From("message_log").
+		Insert(insertData, true, "uuid", "representation", "exact").
+		Execute()
+	if err != nil {
+		return fmt.Errorf("Error inserting into Supabase: %v", err)
+	}
+
+	return nil
+}
+
 type User struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
