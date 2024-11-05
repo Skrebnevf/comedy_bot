@@ -57,6 +57,27 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			return c.Send(AddMeCompleteMsg)
 		}
 
+		if WaitingForCancel[c.Message().Sender.ID] {
+			cancel, err := database.GetCancelReservations(db)
+			if err != nil {
+				log.Println("cannot get list of cancel reservation, error: %v", err)
+			}
+
+			text := strings.TrimPrefix(c.Message().Text, "/cancel")
+			text = strings.TrimSpace(text)
+
+			log.Println(c.Message().Sender.Username + " cancel reserved - " + text)
+
+			msg := cancel + "\n" + text
+
+			if err := database.CancelReservation(c, db, msg); err != nil {
+				log.Println("cannot write cancelation, error: %v", err)
+			}
+
+			WaitingForCancel[c.Message().Sender.ID] = false
+			return c.Send(CancelReservationMsg)
+		}
+
 		if WaitingForAdminMessage[c.Message().Sender.ID] {
 			text := strings.TrimPrefix(c.Message().Text, "/orgy")
 			text = strings.TrimSpace(text)

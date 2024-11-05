@@ -49,7 +49,7 @@ func GetEvents(db *supabase.Client) (string, error) {
 }
 
 type Reservations struct {
-	Description string `json:"reservations"`
+	Reservation string `json:"reservations"`
 }
 
 func GetReservations(db *supabase.Client) (string, error) {
@@ -66,7 +66,7 @@ func GetReservations(db *supabase.Client) (string, error) {
 		return "", fmt.Errorf("unmarshal response error: %v", err)
 	}
 
-	reservations := r[0].Description
+	reservations := r[0].Reservation
 	return reservations, nil
 }
 
@@ -74,10 +74,50 @@ func AddReservations(c telebot.Context, db *supabase.Client, msg string) error {
 	var result []map[string]interface{}
 	if len(result) == 0 {
 		insert := Reservations{
-			Description: msg,
+			Reservation: msg,
 		}
 
 		_, _, err := db.From("reservations").
+			Update(insert, "representation", "exact").
+			Eq("id", "1").
+			Execute()
+		if err != nil {
+			return fmt.Errorf("Error inserting into Supabase: %v", err)
+		}
+	}
+	return nil
+}
+
+type Cancelations struct {
+	Cancelation string `json:"cancelation"`
+}
+
+func GetCancelReservations(db *supabase.Client) (string, error) {
+	res, _, err := db.From("cancelation_reservation").
+		Select("cancelation", "exact", false).
+		Eq("id", "1").
+		Execute()
+	if err != nil {
+		return "", fmt.Errorf("Error inserting into Supabase: %v", err)
+	}
+
+	var c []Cancelations
+	if err := json.Unmarshal(res, &c); err != nil {
+		return "", fmt.Errorf("unmarshal response error: %v", err)
+	}
+
+	reservations := c[0].Cancelation
+	return reservations, nil
+}
+
+func CancelReservation(c telebot.Context, db *supabase.Client, msg string) error {
+	var result []map[string]interface{}
+	if len(result) == 0 {
+		insert := Cancelations{
+			Cancelation: msg,
+		}
+
+		_, _, err := db.From("cancelation_reservation").
 			Update(insert, "representation", "exact").
 			Eq("id", "1").
 			Execute()

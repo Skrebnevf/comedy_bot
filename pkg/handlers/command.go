@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
 	"os"
@@ -56,6 +57,17 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		return c.Send(AddMeFormMsg)
 	})
 
+	b.Handle("/cancel", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
+		WaitingForCancel[c.Message().Sender.ID] = true
+		if err := database.AddCommandCounter(c, db); err != nil {
+			log.Printf("cannot write command and set counter from /cancel: %v", err)
+		}
+		return c.Send(CancelMeMsg)
+	})
+
 	b.Handle("/human", func(c telebot.Context) error {
 		if c.Message().Chat.ID == ChatID {
 			return nil
@@ -70,6 +82,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 
 	b.Handle("/lenochka", func(c telebot.Context) error {
 		reservation, err := database.GetReservations(db)
+		cancelation, err := database.GetCancelReservations(db)
 		if err != nil {
 			log.Println("cannot get reservations lis, error: %v", err)
 		}
@@ -88,7 +101,13 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 			c.Send(CannotWriteFileMsg)
 		}
 
-		if _, err := file.WriteString(reservation); err != nil {
+		if _, err := file.WriteString(fmt.Sprintf("Резервации: %s \n", reservation+"\n")); err != nil {
+			log.Printf("cannot write file: %v", err)
+			WaitingForMessage[c.Message().Sender.ID] = false
+			c.Send(CannotWriteFileMsg)
+		}
+
+		if _, err := file.WriteString(fmt.Sprintf("Отмены: %s \n", cancelation)); err != nil {
 			log.Printf("cannot write file: %v", err)
 			WaitingForMessage[c.Message().Sender.ID] = false
 			c.Send(CannotWriteFileMsg)
