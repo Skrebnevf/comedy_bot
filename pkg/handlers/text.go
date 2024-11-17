@@ -20,7 +20,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			return c.Send(AdminCommandMsg)
 		}
 
-		if AwaitingForward {
+		if AwaitingForward[c.Message().Sender.ID] {
 			msg := c.Message()
 			log.Println(c.Message().Sender.Username + " Asked - " + msg.Text)
 
@@ -28,11 +28,11 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			ForwardedMsg, err = b.Forward(&telebot.Chat{ID: ChatID}, msg)
 			if err != nil {
 				log.Printf("cannot forwared message: %v", err)
-				AwaitingForward = false
+				AwaitingForward[c.Message().Sender.ID] = false
 				return c.Send(CannotForvaredMsg)
 			}
 
-			AwaitingForward = false
+			AwaitingForward[c.Message().Sender.ID] = false
 			return c.Send(ReplyedToHumanMsg)
 		}
 

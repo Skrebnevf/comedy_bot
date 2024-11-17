@@ -12,6 +12,10 @@ import (
 
 func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	b.Handle("/start", func(c telebot.Context) error {
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
@@ -25,6 +29,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/events", func(c telebot.Context) error {
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
@@ -39,6 +47,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/orgy", func(c telebot.Context) error {
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
 		WaitingForAdminMessage[c.Message().Sender.ID] = true
 		return c.Send(OrgyMsg)
 	})
@@ -47,6 +58,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
+
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = true
 		if err := database.WriteUser(c, db); err != nil {
 			log.Printf("cannot write data from /addme: %v", err)
@@ -61,6 +76,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
+
+		AwaitingForward[c.Message().Sender.ID] = false
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
 		WaitingForCancel[c.Message().Sender.ID] = true
 		if err := database.AddCommandCounter(c, db); err != nil {
 			log.Printf("cannot write command and set counter from /cancel: %v", err)
@@ -72,7 +91,11 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
-		AwaitingForward = true
+
+		AwaitingForward[c.Message().Sender.ID] = true
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
 		OriginalUserID = c.Sender().ID
 		if err := database.AddCommandCounter(c, db); err != nil {
 			log.Printf("cannot write command and set counter from /addme: %v", err)
@@ -86,6 +109,11 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 		if err != nil {
 			log.Println("cannot get reservations lis, error: %v", err)
 		}
+
+		AwaitingForward[c.Message().Sender.ID] = false
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
 
 		file, err := os.OpenFile(Output, os.O_WRONLY|os.O_TRUNC, 0644)
 		if err != nil {
@@ -134,6 +162,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/ochko", func(c telebot.Context) error {
+		AwaitingForward[c.Message().Sender.ID] = false
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
 		database.AddReservations(c, db, "")
 		database.CancelReservation(c, db, "")
 		return c.Send("Записи удалены мой повелитель")

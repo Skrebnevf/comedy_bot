@@ -9,7 +9,7 @@ var ChatID = comedyChat
 var WaitingForMessage = map[int64]bool{}
 var WaitingForCancel = map[int64]bool{}
 var WaitingForAdminMessage = map[int64]bool{}
-var AwaitingForward bool
+var AwaitingForward = map[int64]bool{}
 var OriginalUserID int64
 var ForwardedMsg *telebot.Message
 
