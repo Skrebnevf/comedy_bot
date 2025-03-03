@@ -1,4 +1,5 @@
 token: ""
+bot_url: ""
 db:
   db_url: ""
   db_key: ""

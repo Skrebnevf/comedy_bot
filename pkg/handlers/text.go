@@ -9,7 +9,7 @@ import (
 	"gopkg.in/telebot.v4"
 )
 
-func TextHandler(b *telebot.Bot, db *supabase.Client) {
+func TextHandler(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	b.Handle(telebot.OnText, func(c telebot.Context) error {
 		if err := database.WriteMessageLog(c, db); err != nil {
 			log.Printf("cannot write message log: %v", err)
@@ -39,7 +39,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 		if WaitingForMessage[c.Message().Sender.ID] {
 			reservations, err := database.GetReservations(db)
 			if err != nil {
-				log.Println("cannot get list of reservations, error: %v", err)
+				log.Printf("cannot get list of reservations, error: %v", err)
 			}
 
 			text := strings.TrimPrefix(c.Message().Text, "/addme")
@@ -50,7 +50,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			msg := reservations + "\n" + text
 
 			if err := database.AddReservations(c, db, msg); err != nil {
-				log.Println("cannot write new reservations, error: %v", err)
+				log.Printf("cannot write new reservations, error: %v", err)
 			}
 
 			WaitingForMessage[c.Message().Sender.ID] = false
@@ -60,7 +60,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 		if WaitingForCancel[c.Message().Sender.ID] {
 			cancel, err := database.GetCancelReservations(db)
 			if err != nil {
-				log.Println("cannot get list of cancel reservation, error: %v", err)
+				log.Printf("cannot get list of cancel reservation, error: %v", err)
 			}
 
 			text := strings.TrimPrefix(c.Message().Text, "/cancel")
@@ -71,7 +71,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			msg := cancel + "\n" + text
 
 			if err := database.CancelReservation(c, db, msg); err != nil {
-				log.Println("cannot write cancelation, error: %v", err)
+				log.Printf("cannot write cancelation, error: %v", err)
 			}
 
 			WaitingForCancel[c.Message().Sender.ID] = false
@@ -92,7 +92,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client) {
 			WaitingForAdminMessage[c.Message().Sender.ID] = false
 			return c.Send("Объявление для набора в оргию записано")
 		}
-
+		WakeUp(botUrl, " text handler")
 		return c.Send(BaseMsg)
 	})
 }

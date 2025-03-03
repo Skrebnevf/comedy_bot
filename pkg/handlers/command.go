@@ -10,8 +10,9 @@ import (
 	"gopkg.in/telebot.v4"
 )
 
-func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
+func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	b.Handle("/start", func(c telebot.Context) error {
+		WakeUp(botUrl, " /start")
 		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = false
 		WaitingForCancel[c.Message().Sender.ID] = false
@@ -29,6 +30,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/events", func(c telebot.Context) error {
+		WakeUp(botUrl, " /events")
 		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = false
 		WaitingForCancel[c.Message().Sender.ID] = false
@@ -47,6 +49,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/orgy", func(c telebot.Context) error {
+		WakeUp(botUrl, " /orgy")
 		WaitingForMessage[c.Message().Sender.ID] = false
 		WaitingForCancel[c.Message().Sender.ID] = false
 		AwaitingForward[c.Message().Sender.ID] = false
@@ -55,6 +58,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/addme", func(c telebot.Context) error {
+		WakeUp(botUrl, " /addme")
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
@@ -73,6 +77,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/cancel", func(c telebot.Context) error {
+		WakeUp(botUrl, " /cancel")
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
@@ -88,6 +93,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/human", func(c telebot.Context) error {
+		WakeUp(botUrl, " /human")
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}
@@ -104,6 +110,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/lenochka", func(c telebot.Context) error {
+		WakeUp(botUrl, " /lenochka")
 		reservation, err := database.GetReservations(db)
 		cancelation, err := database.GetCancelReservations(db)
 		if err != nil {
@@ -162,6 +169,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client) {
 	})
 
 	b.Handle("/ochko", func(c telebot.Context) error {
+		WakeUp(botUrl, " /ochko")
 		AwaitingForward[c.Message().Sender.ID] = false
 		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = false

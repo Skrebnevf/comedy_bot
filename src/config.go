@@ -15,8 +15,9 @@ var config = "./config.yaml"
 var env = "./.env"
 
 type Config struct {
-	Token string `yaml:"token"`
-	DB    struct {
+	Token  string `yaml:"token"`
+	BotUrl string `yaml:"bot_url"`
+	DB     struct {
 		Url string `yaml:"db_url"`
 		Key string `yaml:"db_key"`
 	} `yaml:"db"`
@@ -39,6 +40,10 @@ func LoadConfig() (*Config, error) {
 
 	if token := os.Getenv("TOKEN"); token != "" {
 		config.Token = token
+	}
+
+	if botUrl := os.Getenv("BOT_URL"); botUrl != "" {
+		config.BotUrl = botUrl
 	}
 
 	if url := os.Getenv("DB_URL"); url != "" {

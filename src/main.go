@@ -42,8 +42,8 @@ func main() {
 		}
 	}()
 
-	handlers.CommandHandlers(b, client)
-	handlers.TextHandler(b, client)
+	handlers.CommandHandlers(b, client, config.BotUrl)
+	handlers.TextHandler(b, client, config.BotUrl)
 	handlers.OtherHandlers(b)
 	handlers.ReplyHandler(b)
 
