@@ -114,7 +114,7 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 		reservation, err := database.GetReservations(db)
 		cancelation, err := database.GetCancelReservations(db)
 		if err != nil {
-			log.Println("cannot get reservations lis, error: %v", err)
+			log.Printf("cannot get reservations lis, error: %v", err)
 		}
 
 		AwaitingForward[c.Message().Sender.ID] = false
