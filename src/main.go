@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github/skrebnevf/comedy_belgrade_bot/pkg/handlers"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/supabase-community/supabase-go"
 )
@@ -42,10 +44,26 @@ func main() {
 		}
 	}()
 
+	go func() {
+		for {
+			resp, err := http.Get(config.BotUrl)
+			if err != nil {
+				log.Printf("Request error: %v", err)
+			} else {
+				body, err := io.ReadAll(resp.Body)
+				if err != nil {
+					log.Printf("cannot get body request: %v", err)
+				} else {
+					log.Printf("Resp: %s, Time %v", body, time.Now())
+				}
+			}
+			time.Sleep(10 * time.Minute)
+		}
+	}()
+
 	handlers.CommandHandlers(b, client, config.BotUrl)
 	handlers.TextHandler(b, client, config.BotUrl)
 	handlers.OtherHandlers(b)
 	handlers.ReplyHandler(b)
-
 	b.Start()
 }

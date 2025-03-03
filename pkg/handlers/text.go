@@ -92,7 +92,7 @@ func TextHandler(b *telebot.Bot, db *supabase.Client, botUrl string) {
 			WaitingForAdminMessage[c.Message().Sender.ID] = false
 			return c.Send("Объявление для набора в оргию записано")
 		}
-		WakeUp(botUrl, " text handler")
+
 		return c.Send(BaseMsg)
 	})
 }
