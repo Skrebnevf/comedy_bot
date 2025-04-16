@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gage-technologies/mistral-go"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -27,6 +28,8 @@ func main() {
 	if err != nil {
 		log.Printf("DB error: %v", err)
 	}
+
+	ai := mistral.NewMistralClientDefault(config.Mistral)
 
 	go func() {
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +65,7 @@ func main() {
 	}()
 
 	handlers.CommandHandlers(b, client, config.BotUrl)
-	handlers.TextHandler(b, client, config.BotUrl)
+	handlers.TextHandler(b, client, config.BotUrl, ai)
 	handlers.OtherHandlers(b)
 	handlers.ReplyHandler(b)
 	b.Start()

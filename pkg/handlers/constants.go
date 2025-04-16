@@ -12,6 +12,7 @@ var WaitingForAdminMessage = map[int64]bool{}
 var AwaitingForward = map[int64]bool{}
 var OriginalUserID int64
 var ForwardedMsg *telebot.Message
+var WaitingForKirill = map[int64]bool{}
 
 var Output = "./output/spisok_dorogih_gostei.txt"
 

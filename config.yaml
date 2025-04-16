@@ -1,5 +1,6 @@
 token: ""
 bot_url: ""
+mistral: ""
 db:
   db_url: ""
   db_key: ""

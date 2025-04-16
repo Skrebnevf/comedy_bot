@@ -28,6 +28,15 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 		return c.Send(Start)
 	})
 
+	b.Handle("/kirill", func(c telebot.Context) error {
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
+		WaitingForKirill[c.Message().Sender.ID] = true
+		return c.Send("Ну шо ты голова, шутки шутить думаешь?")
+	})
+
 	b.Handle("/events", func(c telebot.Context) error {
 		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = false
