@@ -160,6 +160,23 @@ type User struct {
 	IsBot    bool   `json:"isBot"`
 }
 
+func GetUserIDs(db *supabase.Client) ([]User, error) {
+	resp, _, err := db.From("users_test").
+		Select("*", "exact", false).
+		Execute()
+	if err != nil {
+		return nil, fmt.Errorf("cannot get users from db, err: %v", err)
+	}
+
+	var u []User
+	err = json.Unmarshal(resp, &u)
+	if err != nil {
+		return nil, fmt.Errorf("cannot unmarshal user data, err: %v", err)
+	}
+
+	return u, nil
+}
+
 func WriteUser(c telebot.Context, db *supabase.Client) error {
 	userID := c.Sender().ID
 	username := c.Sender().Username

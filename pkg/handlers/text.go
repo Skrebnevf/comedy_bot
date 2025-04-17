@@ -4,6 +4,7 @@ import (
 	"github/skrebnevf/comedy_belgrade_bot/pkg/database"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/supabase-community/supabase-go"
 	"gopkg.in/telebot.v4"
@@ -91,6 +92,33 @@ func TextHandler(b *telebot.Bot, db *supabase.Client, botUrl string) {
 
 			WaitingForAdminMessage[c.Message().Sender.ID] = false
 			return c.Send("Объявление для набора в оргию записано")
+		}
+
+		if AwaitingSpamMessage[c.Message().Sender.ID] {
+			msg := c.Message().Text
+			AwaitingSpamMessage[c.Message().Sender.ID] = false
+
+			users, err := database.GetUserIDs(db)
+			if err != nil {
+				log.Println(err)
+				return c.Reply("Sorry DB have error")
+			}
+
+			for _, user := range users {
+				if c.Message().Sender.ID == user.ID {
+					continue
+				}
+
+				_, err = c.Bot().Send(&telebot.Chat{ID: user.ID}, msg)
+				if err != nil {
+					log.Println(err)
+					return c.Reply("Ошибка в отправке сообщения для %d, %v", user.ID, err)
+				}
+
+				time.Sleep(100 * time.Millisecond)
+			}
+
+			return c.Send("Заспамили")
 		}
 
 		return c.Send(BaseMsg)

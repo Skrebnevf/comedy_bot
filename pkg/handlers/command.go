@@ -170,4 +170,16 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 		database.CancelReservation(c, db, "")
 		return c.Send("Записи удалены мой повелитель")
 	})
+
+	b.Handle("/ebanko", func(c telebot.Context) error {
+		if c.Message().Chat.ID == ChatID {
+			return nil
+		}
+		WaitingForAdminMessage[c.Message().Sender.ID] = false
+		WaitingForMessage[c.Message().Sender.ID] = false
+		WaitingForCancel[c.Message().Sender.ID] = false
+		AwaitingForward[c.Message().Sender.ID] = false
+		AwaitingSpamMessage[c.Message().Sender.ID] = true
+		return c.Send("В следующем сообщении будет анонс мероприятия")
+	})
 }
