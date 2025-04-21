@@ -47,6 +47,10 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	})
 
 	b.Handle("/orgy", func(c telebot.Context) error {
+		if _, ok := AllowedUsers[c.Message().Sender.Username]; !ok {
+			fmt.Println(AllowedUsers)
+			return c.Send(NahMsg)
+		}
 		WaitingForMessage[c.Message().Sender.ID] = false
 		WaitingForCancel[c.Message().Sender.ID] = false
 		AwaitingForward[c.Message().Sender.ID] = false
@@ -104,6 +108,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	})
 
 	b.Handle("/lenochka", func(c telebot.Context) error {
+		if _, ok := AllowedUsers[c.Message().Sender.Username]; !ok {
+			return c.Send(NahMsg)
+		}
 		reservation, err := database.GetReservations(db)
 		cancelation, err := database.GetCancelReservations(db)
 		if err != nil {
@@ -162,6 +169,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	})
 
 	b.Handle("/ochko", func(c telebot.Context) error {
+		if _, ok := AllowedUsers[c.Message().Sender.Username]; !ok {
+			return c.Send(NahMsg)
+		}
 		AwaitingForward[c.Message().Sender.ID] = false
 		WaitingForAdminMessage[c.Message().Sender.ID] = false
 		WaitingForMessage[c.Message().Sender.ID] = false
@@ -172,6 +182,9 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 	})
 
 	b.Handle("/ebanko", func(c telebot.Context) error {
+		if _, ok := AllowedUsers[c.Message().Sender.Username]; !ok {
+			return c.Send(NahMsg)
+		}
 		if c.Message().Chat.ID == ChatID {
 			return nil
 		}

@@ -23,6 +23,10 @@ func main() {
 		log.Fatalf("cannot init bot, error: %v", err)
 	}
 
+	handlers.Admin1 = config.Admin1
+	handlers.Admin2 = config.Admin2
+	handlers.InitAllowedUsers()
+
 	client, err := supabase.NewClient(config.DB.Url, config.DB.Key, &supabase.ClientOptions{})
 	if err != nil {
 		log.Printf("DB error: %v", err)

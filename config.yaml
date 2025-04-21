@@ -1,5 +1,7 @@
 token: ""
 bot_url: ""
+admin_1: ""
+admin_2: ""
 db:
   db_url: ""
   db_key: ""

@@ -2,9 +2,18 @@ package handlers
 
 import "gopkg.in/telebot.v4"
 
-var testChat = int64(-1002426910323)
 var comedyChat = int64(-1002129768213)
 var ChatID = comedyChat
+
+var Admin1 string
+var Admin2 string
+
+var AllowedUsers = map[string]struct{}{}
+
+func InitAllowedUsers() {
+	AllowedUsers[Admin1] = struct{}{}
+	AllowedUsers[Admin2] = struct{}{}
+}
 
 var WaitingForMessage = map[int64]bool{}
 var WaitingForCancel = map[int64]bool{}
@@ -20,6 +29,7 @@ var AddMeFormMsg = "Напишите через запятую: имя для з
 var ReplyToHumanMsg = "Следующее ваше сообщение будет отправлено кожанному мешку"
 var ReplyedToHumanMsg = "Ваше сообщение было переслано хозяину! Хочешь расскажу анекдот пока ждешь ответ?"
 var ReplyMsg = "Ответ на ваше сообщение: "
+var NahMsg = "Чет я тебя в админах не видел, не тыкай на кнопки"
 var CannotOpenFileErrMsg = "Файла нет, или сервак упал, пиши моему отцу!"
 var EmptyFileErrMsg = "Нет гомиков для записи ну или боту пизда, попроси чтоб лог посмотрели!"
 var SentFileMsg = "Там записаны такие же извращенцы, как ты, почитай"
