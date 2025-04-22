@@ -48,7 +48,6 @@ func CommandHandlers(b *telebot.Bot, db *supabase.Client, botUrl string) {
 
 	b.Handle("/orgy", func(c telebot.Context) error {
 		if _, ok := AllowedUsers[c.Message().Sender.Username]; !ok {
-			fmt.Println(AllowedUsers)
 			return c.Send(NahMsg)
 		}
 		WaitingForMessage[c.Message().Sender.ID] = false

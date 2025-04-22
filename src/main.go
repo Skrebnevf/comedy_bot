@@ -61,7 +61,7 @@ func main() {
 					log.Printf("Resp: %s, Time %v", body, time.Now())
 				}
 			}
-			time.Sleep(10 * time.Minute)
+			time.Sleep(3 * time.Minute)
 		}
 	}()
 
