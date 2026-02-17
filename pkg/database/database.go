@@ -161,7 +161,7 @@ type User struct {
 }
 
 func GetUserIDs(db *supabase.Client) ([]User, error) {
-	resp, _, err := db.From("users_test").
+	resp, _, err := db.From("users").
 		Select("*", "exact", false).
 		Execute()
 	if err != nil {
